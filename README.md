@@ -77,4 +77,4 @@ flask db upgrade
 flask run or python run.py
 
 
-The API will be available at http://127.0.0.1:5000/api/.
+The API will be available at http://127.0.0.1:5000/api/
