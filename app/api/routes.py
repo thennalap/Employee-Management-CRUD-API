@@ -5,6 +5,9 @@ from app.models import Employee
 from sqlalchemy import desc
 from flask_jwt_extended import jwt_required, create_access_token
 
+
+
+
 # Login API.. Hardcoded credentials...username=admin, password=admin123
 @bp.route('/login', methods=['POST'])
 def login():
@@ -23,7 +26,7 @@ def login():
 
 
     if username != "admin" or password != "admin123":
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid login credentials"}), 401
 
     access_token = create_access_token(identity="admin")
     return jsonify({"access_token":access_token}), 200
@@ -70,10 +73,10 @@ def list_employees():
         query = Employee.query
         
         if department:
-            query = query.filter_by(department=request.args["department"])
+            query = query.filter_by(department=department)
 
         if role:
-            query = query.filter_by(role=request.args["role"])
+            query = query.filter_by(role=role)
 
         query = query.order_by(desc(Employee.id))
         pagination = query.paginate(page=page, per_page=per_page,error_out=False)
@@ -122,13 +125,13 @@ def update_employee(id):
     if "name" in data:
         employee.name=data['name']
 
-    if "deoartment" in data:
+    if "department" in data:
         employee.department=data['department']
 
     if "role" in data:
         employee.role=data['role']
     db.session.commit()       
-    return jsonify({'message':'Employee updated successfully'}),200
+    return jsonify({'message':'Employee updated successfully','employee':employee.to_dict()}),200
 
 # delete an employee
 @bp.route('/employees/<int:id>', methods=['DELETE'])
